@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -46,6 +47,34 @@ func CreateRecipe(c *gin.Context) {
 	c.JSON(http.StatusCreated, newRecipe)
 }
 
+// DELETE /api/recipes/:id - delete a recipe by ID
+func DeleteRecipe(c *gin.Context) {
+	idParam := c.Param("id")
+	var id int
+	if _, err := fmt.Sscanf(idParam, "%d", &id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid recipe ID"})
+		return
+	}
+
+	index := -1
+	for i, r := range recipes {
+		if r.ID == id {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
+		return
+	}
+
+	// Removes recipe from slice
+	recipes = append(recipes[:index], recipes[index+1:]...)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Recipe deleted"})
+}
+
 func main() {
 	router := gin.Default()
 
@@ -64,6 +93,7 @@ func main() {
 	{
 		api.GET("/recipes", GetRecipes)
 		api.POST("/recipes", CreateRecipe)
+		api.DELETE("/recipes/:id", DeleteRecipe)
 	}
 
 	// Serve frontend static assets
