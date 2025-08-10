@@ -49,9 +49,9 @@ func CreateRecipe(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
-	// CORS config for development: allow all origins
+	// CORS config for development:
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://meal-planner-app-sepia.vercel.app/", "http://localhost:5173"},
+		AllowOrigins:     []string{"https://meal-planner-app-sepia.vercel.app", "http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		ExposeHeaders:    []string{"Content-Length"},
